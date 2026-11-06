@@ -1,0 +1,15 @@
+{
+  "selected_model": "Linear SVM",
+  "selection_metric": "highest validation macro F1, then highest accuracy",
+  "languages": [
+    "deu",
+    "eng",
+    "fra",
+    "por",
+    "spa"
+  ],
+  "selected_train_records": 2500,
+  "validation_records": 500,
+  "official_test_records": 2500,
+  "official_test_labels": 2500
+}
