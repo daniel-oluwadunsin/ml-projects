@@ -1,0 +1,13 @@
+{
+  "selected_model": "Linear SVM",
+  "selection_metric": "highest validation macro F1, then highest accuracy",
+  "validation_rows": 24000,
+  "training_rows_used_for_comparison": 96000,
+  "official_training_rows": 120000,
+  "class_labels": [
+    "World",
+    "Sports",
+    "Business",
+    "Sci/Tech"
+  ]
+}
