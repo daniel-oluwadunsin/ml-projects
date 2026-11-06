@@ -9,7 +9,6 @@ import zipfile
 from pathlib import Path
 from urllib.request import Request, urlopen
 
-
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 RAW_DIR = PROJECT_DIR / "data" / "raw"
 ARCHIVE_PATH = RAW_DIR / "wili-2018.zip"
@@ -25,19 +24,28 @@ def download_data(force: bool = False) -> dict[str, Path]:
         return paths
 
     if force or not ARCHIVE_PATH.exists():
-        request = Request(DATA_URL, headers={"User-Agent": "language-identification-ml-project/1.0"})
-        with urlopen(request, timeout=180) as response, ARCHIVE_PATH.open("wb") as output:
+        request = Request(
+            DATA_URL, headers={"User-Agent": "language-identification-ml-project/1.0"}
+        )
+        with (
+            urlopen(request, timeout=180) as response,
+            ARCHIVE_PATH.open("wb") as output,
+        ):
             shutil.copyfileobj(response, output)
 
     digest = hashlib.md5(ARCHIVE_PATH.read_bytes()).hexdigest()
     if digest != EXPECTED_MD5:
-        raise RuntimeError(f"WiLI archive checksum mismatch: got {digest}, expected {EXPECTED_MD5}")
+        raise RuntimeError(
+            f"WiLI archive checksum mismatch: got {digest}, expected {EXPECTED_MD5}"
+        )
 
     with zipfile.ZipFile(ARCHIVE_PATH) as archive:
         members = {Path(name).name: name for name in archive.namelist()}
         missing = set(EXPECTED_FILES) - set(members)
         if missing:
-            raise RuntimeError(f"WiLI archive is missing expected files: {sorted(missing)}")
+            raise RuntimeError(
+                f"WiLI archive is missing expected files: {sorted(missing)}"
+            )
         for name, destination in paths.items():
             destination.write_bytes(archive.read(members[name]))
     return paths
@@ -45,7 +53,9 @@ def download_data(force: bool = False) -> dict[str, Path]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--force", action="store_true", help="Download the archive again")
+    parser.add_argument(
+        "--force", action="store_true", help="Download the archive again"
+    )
     args = parser.parse_args()
     paths = download_data(force=args.force)
     for name, path in paths.items():
