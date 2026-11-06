@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from joblib import dump
 from sklearn.inspection import permutation_importance
-
 from student_pipeline import (
     PROJECT_DIR,
     candidate_models,
@@ -34,15 +33,19 @@ def compare_models() -> tuple[str, pd.DataFrame]:
         model = make_pipeline(estimator)
         model.fit(x_train, y_train)
         prediction = model.predict(x_validation)
-        comparison_rows.append({"model": name, **regression_metrics(y_validation, prediction)})
+        comparison_rows.append(
+            {"model": name, **regression_metrics(y_validation, prediction)}
+        )
 
     comparison = pd.DataFrame(comparison_rows).sort_values(
         ["mae", "rmse", "r2"], ascending=[True, True, False]
     )
+
     selected_name = str(comparison.iloc[0]["model"])
     results_dir = PROJECT_DIR / "results"
     results_dir.mkdir(exist_ok=True)
     comparison.to_csv(results_dir / "validation_comparison.csv", index=False)
+
     (results_dir / "validation_selection.json").write_text(
         json.dumps(
             {
@@ -58,6 +61,7 @@ def compare_models() -> tuple[str, pd.DataFrame]:
         )
         + "\n"
     )
+
     save_feature_options(data)
 
     fig, axis = plt.subplots(figsize=(7, 4))
@@ -90,7 +94,9 @@ def finalize_model(selected_name: str) -> dict[str, float]:
 
     metadata = json.loads((results_dir / "validation_selection.json").read_text())
     metadata.update({"selected_model": selected_name, **metrics})
-    (results_dir / "test_metrics.json").write_text(json.dumps(metadata, indent=2) + "\n")
+    (results_dir / "test_metrics.json").write_text(
+        json.dumps(metadata, indent=2) + "\n"
+    )
     pd.DataFrame({"actual_G3": test_y, "predicted_G3": test_prediction}).to_csv(
         results_dir / "test_predictions.csv", index=False
     )
@@ -129,7 +135,10 @@ def finalize_model(selected_name: str) -> dict[str, float]:
     top_importance = importance_frame.head(10).sort_values("importance")
     fig, axis = plt.subplots(figsize=(8, 5))
     axis.barh(top_importance["feature"], top_importance["importance"], color="#28a88a")
-    axis.set(title="Permutation importance on held-out test data", xlabel="Increase in MAE when shuffled")
+    axis.set(
+        title="Permutation importance on held-out test data",
+        xlabel="Increase in MAE when shuffled",
+    )
     fig.tight_layout()
     fig.savefig(results_dir / "feature_importance.png", dpi=160)
     plt.close(fig)

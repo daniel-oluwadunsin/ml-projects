@@ -8,6 +8,7 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
+from data.download_data import download_data
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
@@ -17,19 +18,39 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 
-from data.download_data import download_data
-
-
 PROJECT_DIR = Path(__file__).resolve().parent
 RANDOM_STATE = 42
 TARGET = "G3"
 EXCLUDED_FEATURES = {"G1", "G2", TARGET}
 CATEGORICAL_COLUMNS = [
-    "school", "sex", "address", "famsize", "Pstatus", "Medu", "Fedu",
-    "Mjob", "Fjob", "reason", "guardian", "traveltime", "studytime",
-    "failures", "schoolsup", "famsup", "paid", "activities", "nursery",
-    "higher", "internet", "romantic", "famrel", "freetime", "goout",
-    "Dalc", "Walc", "health",
+    "school",
+    "sex",
+    "address",
+    "famsize",
+    "Pstatus",
+    "Medu",
+    "Fedu",
+    "Mjob",
+    "Fjob",
+    "reason",
+    "guardian",
+    "traveltime",
+    "studytime",
+    "failures",
+    "schoolsup",
+    "famsup",
+    "paid",
+    "activities",
+    "nursery",
+    "higher",
+    "internet",
+    "romantic",
+    "famrel",
+    "freetime",
+    "goout",
+    "Dalc",
+    "Walc",
+    "health",
 ]
 NUMERIC_COLUMNS = ["age", "absences"]
 FEATURE_COLUMNS = CATEGORICAL_COLUMNS + NUMERIC_COLUMNS
@@ -40,7 +61,9 @@ def load_dataset(download: bool = True) -> pd.DataFrame:
     path = PROJECT_DIR / "data" / "raw" / "student-mat.csv"
     if not path.exists():
         if not download:
-            raise FileNotFoundError("Dataset missing. Run python data/download_data.py first.")
+            raise FileNotFoundError(
+                "Dataset missing. Run python data/download_data.py first."
+            )
         path = download_data()
     data = pd.read_csv(path, sep=";")
     missing = set(FEATURE_COLUMNS + [TARGET]) - set(data.columns)
@@ -64,7 +87,11 @@ def make_pipeline(estimator: Any) -> Pipeline:
     """Build preprocessing and regression as a single leakage-safe pipeline."""
     preprocessing = ColumnTransformer(
         transformers=[
-            ("categorical", OneHotEncoder(handle_unknown="ignore"), CATEGORICAL_COLUMNS),
+            (
+                "categorical",
+                OneHotEncoder(handle_unknown="ignore"),
+                CATEGORICAL_COLUMNS,
+            ),
             ("numeric", StandardScaler(), NUMERIC_COLUMNS),
         ],
         remainder="drop",
@@ -88,7 +115,9 @@ def candidate_models() -> dict[str, Any]:
     }
 
 
-def regression_metrics(actual: pd.Series | np.ndarray, predicted: np.ndarray) -> dict[str, float]:
+def regression_metrics(
+    actual: pd.Series | np.ndarray, predicted: np.ndarray
+) -> dict[str, float]:
     return {
         "mae": float(mean_absolute_error(actual, predicted)),
         "rmse": float(np.sqrt(mean_squared_error(actual, predicted))),
