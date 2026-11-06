@@ -10,11 +10,16 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import pandas as pd
-
 from data.download_data import download_data
 
 PROJECT_DIR = Path(__file__).resolve().parent
-LANGUAGE_CODES = {"eng": "English", "fra": "French", "spa": "Spanish", "deu": "German", "por": "Portuguese"}
+LANGUAGE_CODES = {
+    "eng": "English",
+    "fra": "French",
+    "spa": "Spanish",
+    "deu": "German",
+    "por": "Portuguese",
+}
 
 
 def read_text(path: Path) -> pd.Series:
@@ -23,8 +28,12 @@ def read_text(path: Path) -> pd.Series:
 
 def main() -> None:
     files = download_data()
-    train_labels = pd.Series(files["y_train.txt"].read_text(encoding="utf-8").splitlines(), dtype="string")
-    test_labels = pd.Series(files["y_test.txt"].read_text(encoding="utf-8").splitlines(), dtype="string")
+    train_labels = pd.Series(
+        files["y_train.txt"].read_text(encoding="utf-8").splitlines(), dtype="string"
+    )
+    test_labels = pd.Series(
+        files["y_test.txt"].read_text(encoding="utf-8").splitlines(), dtype="string"
+    )
     train_texts = read_text(files["x_train.txt"])
     test_texts = read_text(files["x_test.txt"])
 
@@ -43,8 +52,8 @@ def main() -> None:
 
     summary = {
         "dataset": "WiLI-2018",
-        "train_records_total": int(len(train_labels)),
-        "test_records_total": int(len(test_labels)),
+        "train_records_total": len(train_labels),
+        "test_records_total": len(test_labels),
         "languages_selected": languages,
         "notes": "Official split is retained; model selection uses a validation holdout from the official training split.",
     }
@@ -57,8 +66,20 @@ def main() -> None:
     test_counts = [details["test_records"] for details in languages.values()]
     fig, axis = plt.subplots(figsize=(8, 4.5))
     position = range(len(names))
-    axis.bar([p - 0.18 for p in position], train_counts, width=0.36, label="Official train", color="#5271ff")
-    axis.bar([p + 0.18 for p in position], test_counts, width=0.36, label="Official test", color="#28a88a")
+    axis.bar(
+        [p - 0.18 for p in position],
+        train_counts,
+        width=0.36,
+        label="Official train",
+        color="#5271ff",
+    )
+    axis.bar(
+        [p + 0.18 for p in position],
+        test_counts,
+        width=0.36,
+        label="Official test",
+        color="#28a88a",
+    )
     axis.set_xticks(list(position), names)
     axis.set_ylabel("Paragraphs")
     axis.set_title("WiLI records in the selected languages")
