@@ -1,0 +1,22 @@
+{
+  "selected_model": "Linear SVM",
+  "selection_metric": "highest validation macro F1, then highest accuracy",
+  "languages": [
+    "deu",
+    "eng",
+    "fra",
+    "por",
+    "spa"
+  ],
+  "selected_train_records": 2500,
+  "validation_records": 500,
+  "official_test_records": 2500,
+  "official_test_labels": 2500,
+  "calibration": "5-fold sigmoid calibration on the complete official training subset",
+  "calibration_method": "sigmoid",
+  "accuracy": 0.9896,
+  "macro_f1": 0.9896028082597251,
+  "macro_precision": 0.9896704548314614,
+  "macro_recall": 0.9896,
+  "multiclass_brier": 0.017696130501398944
+}
