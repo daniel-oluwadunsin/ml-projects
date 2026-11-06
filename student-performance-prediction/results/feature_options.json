@@ -1,0 +1,153 @@
+{
+  "school": [
+    "GP",
+    "MS"
+  ],
+  "sex": [
+    "F",
+    "M"
+  ],
+  "address": [
+    "R",
+    "U"
+  ],
+  "famsize": [
+    "GT3",
+    "LE3"
+  ],
+  "Pstatus": [
+    "A",
+    "T"
+  ],
+  "Medu": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "Fedu": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "Mjob": [
+    "at_home",
+    "health",
+    "other",
+    "services",
+    "teacher"
+  ],
+  "Fjob": [
+    "at_home",
+    "health",
+    "other",
+    "services",
+    "teacher"
+  ],
+  "reason": [
+    "course",
+    "home",
+    "other",
+    "reputation"
+  ],
+  "guardian": [
+    "father",
+    "mother",
+    "other"
+  ],
+  "traveltime": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "studytime": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "failures": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "schoolsup": [
+    "no",
+    "yes"
+  ],
+  "famsup": [
+    "no",
+    "yes"
+  ],
+  "paid": [
+    "no",
+    "yes"
+  ],
+  "activities": [
+    "no",
+    "yes"
+  ],
+  "nursery": [
+    "no",
+    "yes"
+  ],
+  "higher": [
+    "no",
+    "yes"
+  ],
+  "internet": [
+    "no",
+    "yes"
+  ],
+  "romantic": [
+    "no",
+    "yes"
+  ],
+  "famrel": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "freetime": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "goout": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "Dalc": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "Walc": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "health": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ]
+}
