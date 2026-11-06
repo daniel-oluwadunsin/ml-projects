@@ -1,0 +1,12 @@
+{
+  "selected_model": "Random Forest",
+  "selection_metric": "lowest validation MAE, then lowest validation RMSE, then highest validation R2",
+  "split_sizes": {
+    "train": 276,
+    "validation": 59,
+    "test": 60
+  },
+  "mae": 3.0285816225441224,
+  "rmse": 3.7814410137925645,
+  "r2": 0.2860664303387729
+}
