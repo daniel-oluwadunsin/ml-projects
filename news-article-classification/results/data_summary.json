@@ -1,0 +1,14 @@
+{
+  "dataset": "AG News",
+  "split_used_for_inspection": "official training data only",
+  "train_records": 120000,
+  "training_missing_cells": 0,
+  "category_counts": {
+    "World": 30000,
+    "Sports": 30000,
+    "Business": 30000,
+    "Sci/Tech": 30000
+  },
+  "mean_title_characters": 42.1,
+  "mean_description_characters": 193.4
+}
