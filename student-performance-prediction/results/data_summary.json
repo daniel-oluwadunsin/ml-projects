@@ -1,0 +1,20 @@
+{
+  "dataset": "UCI Student Performance - Mathematics",
+  "source_file": "student-mat.csv",
+  "rows": 395,
+  "columns": 33,
+  "missing_cells": 0,
+  "target": "G3",
+  "target_min": 0,
+  "target_max": 20,
+  "target_mean": 10.415,
+  "target_std": 4.581,
+  "grade_correlations": {
+    "G1": 0.801,
+    "G2": 0.905
+  },
+  "excluded_from_model": [
+    "G1",
+    "G2"
+  ]
+}
