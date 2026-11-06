@@ -1,0 +1,43 @@
+{
+  "dataset": "WiLI-2018",
+  "train_records_total": 117500,
+  "test_records_total": 117500,
+  "languages_selected": {
+    "eng": {
+      "name": "English",
+      "train_records": 500,
+      "test_records": 500,
+      "mean_train_characters": 436.5,
+      "min_train_characters": 140
+    },
+    "fra": {
+      "name": "French",
+      "train_records": 500,
+      "test_records": 500,
+      "mean_train_characters": 407.5,
+      "min_train_characters": 140
+    },
+    "spa": {
+      "name": "Spanish",
+      "train_records": 500,
+      "test_records": 500,
+      "mean_train_characters": 399.5,
+      "min_train_characters": 140
+    },
+    "deu": {
+      "name": "German",
+      "train_records": 500,
+      "test_records": 500,
+      "mean_train_characters": 441.9,
+      "min_train_characters": 140
+    },
+    "por": {
+      "name": "Portuguese",
+      "train_records": 500,
+      "test_records": 500,
+      "mean_train_characters": 413.0,
+      "min_train_characters": 140
+    }
+  },
+  "notes": "Official split is retained; model selection uses a validation holdout from the official training split."
+}
