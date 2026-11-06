@@ -1,0 +1,21 @@
+{
+  "selected_model": "Linear SVM",
+  "selection_metric": "highest validation macro F1, then highest accuracy",
+  "validation_rows": 24000,
+  "training_rows_used_for_comparison": 96000,
+  "official_training_rows": 120000,
+  "class_labels": [
+    "World",
+    "Sports",
+    "Business",
+    "Sci/Tech"
+  ],
+  "calibration": "5-fold sigmoid calibration on the complete official training set",
+  "calibration_method": "sigmoid",
+  "official_test_rows": 7600,
+  "accuracy": 0.9273684210526316,
+  "macro_f1": 0.9272051093590413,
+  "macro_precision": 0.9272176235430496,
+  "macro_recall": 0.9273684210526316,
+  "multiclass_brier": 0.11662449636285654
+}
