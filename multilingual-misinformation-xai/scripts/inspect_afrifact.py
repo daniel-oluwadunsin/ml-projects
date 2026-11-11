@@ -13,7 +13,9 @@ def main() -> None:
     try:
         from datasets import get_dataset_config_names, load_dataset_builder
     except ImportError as exc:
-        raise SystemExit("Install dependencies with `uv sync` before inspecting dataset metadata") from exc
+        raise SystemExit(
+            "Install dependencies with `uv sync` before inspecting dataset metadata"
+        ) from exc
     try:
         configurations = get_dataset_config_names(args.repository)
         print(f"Repository: {args.repository}")
@@ -32,7 +34,8 @@ def main() -> None:
     except Exception as exc:
         raise SystemExit(
             f"Dataset metadata inspection failed ({type(exc).__name__}: {exc}). Sign in to Hugging "
-            "Face, accept the AfrIFact dataset conditions, then run `hf auth login`. This tool does "
+            "Face, accept the AfrIFact dataset conditions, then run `hf auth login`. "
+            "This tool does "
             "not bypass gated access."
         ) from exc
 

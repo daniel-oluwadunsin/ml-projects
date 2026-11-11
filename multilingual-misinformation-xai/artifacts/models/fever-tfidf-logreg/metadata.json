@@ -1,0 +1,56 @@
+{
+  "run_id": "latest",
+  "created_at_utc": "2026-11-11T11:02:52.031433+00:00",
+  "dataset": "FEVER",
+  "task": "English claim-only label classification",
+  "selected_candidate": "word_unigrams_bigrams",
+  "selected_configuration": {
+    "max_features": 150000,
+    "min_df": 2,
+    "class_weight": "balanced",
+    "max_iter": 1500,
+    "seed": 42,
+    "name": "word_unigrams_bigrams",
+    "analyzer": "word",
+    "ngram_range": [
+      1,
+      2
+    ],
+    "C": 2.0
+  },
+  "label_mapping": {
+    "SUPPORTS": "SUPPORTED",
+    "REFUTES": "REFUTED",
+    "NOT ENOUGH INFO": "NOT_ENOUGH_INFORMATION"
+  },
+  "language_coverage": [
+    "en"
+  ],
+  "selection_metric": "validation macro_f1",
+  "seed": 42,
+  "split_strategy": "StratifiedGroupKFold (7 folds, first fold used for validation) on NFC, whitespace-normalized, casefolded claim text",
+  "source_train_rows": 145446,
+  "source_train_rows_before_overlap_filter": 145449,
+  "internal_fit_rows": 124666,
+  "internal_validation_rows": 20780,
+  "heldout_partition": "official labelled development set; not the blind test",
+  "heldout_rows": 19998,
+  "heldout_sample_ids_sha256": "665165068b8b287e5b6a192bc74739b7d6fac34b502bc6794d528be6431458cc",
+  "source_partition_duplicate_groups_removed_from_training": 3,
+  "source_partition_rows_removed_from_training": 3,
+  "train_file_sha256": "eba7e8f87076753f8494718b9a857827af7bf73e76c9e4b75420207d26e588b6",
+  "heldout_file_sha256": "e89865bfe1b4dd054e03dd57d7241a6fde24862905f31117cf0cd719f7c78df7",
+  "library_versions": {
+    "scikit_learn": "1.9.1",
+    "numpy": "2.5.4"
+  },
+  "runtime": {
+    "python": "3.14.6",
+    "platform": "macOS-26.4.1-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "final_fit_seconds": 12.599573291001434,
+    "heldout_prediction_seconds": 0.18621400000120047,
+    "heldout_milliseconds_per_example": 0.009311631163176341
+  },
+  "exploratory_subset": null
+}

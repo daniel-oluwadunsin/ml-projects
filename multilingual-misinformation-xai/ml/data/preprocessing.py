@@ -5,7 +5,6 @@ from __future__ import annotations
 import re
 import unicodedata
 
-
 _WHITESPACE = re.compile(r"\s+")
 
 
@@ -19,4 +18,3 @@ def normalize_text(text: str) -> str:
 def duplicate_group_id(text: str) -> str:
     """Return a deterministic normalized key used to keep duplicates in one split."""
     return normalize_text(text).casefold()
-

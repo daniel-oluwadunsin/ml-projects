@@ -22,9 +22,7 @@ def grouped_train_validation_indices(
     if len(set(groups)) < n_splits:
         raise ValueError(f"Need at least {n_splits} unique groups for grouped validation")
     splitter = StratifiedGroupKFold(n_splits=n_splits, shuffle=True, random_state=seed)
-    fit_indices, validation_indices = next(
-        splitter.split(np.zeros(len(labels)), labels, groups)
-    )
+    fit_indices, validation_indices = next(splitter.split(np.zeros(len(labels)), labels, groups))
     assert_group_disjoint(
         [groups[index] for index in fit_indices],
         [groups[index] for index in validation_indices],

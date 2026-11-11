@@ -1,2 +1,1 @@
 """Model construction and loading."""
-

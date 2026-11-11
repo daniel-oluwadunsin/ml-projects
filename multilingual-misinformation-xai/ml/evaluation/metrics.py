@@ -19,9 +19,9 @@ from sklearn.metrics import (
 def classification_metrics(
     y_true: Sequence[str], y_pred: Sequence[str], labels: Sequence[str] | None = None
 ) -> dict[str, Any]:
-    if len(y_true) != len(y_pred) or not y_true:
+    if len(y_true) != len(y_pred) or len(y_true) == 0:
         raise ValueError("y_true and y_pred must have the same non-zero length")
-    labels = list(labels or sorted(set(y_true).union(y_pred)))
+    labels = list(labels) if labels is not None else sorted(set(y_true).union(y_pred))
     report = classification_report(
         y_true,
         y_pred,
@@ -33,10 +33,18 @@ def classification_metrics(
         "n_examples": len(y_true),
         "labels": labels,
         "accuracy": float(accuracy_score(y_true, y_pred)),
-        "macro_precision": float(precision_score(y_true, y_pred, labels=labels, average="macro", zero_division=0)),
-        "macro_recall": float(recall_score(y_true, y_pred, labels=labels, average="macro", zero_division=0)),
-        "macro_f1": float(f1_score(y_true, y_pred, labels=labels, average="macro", zero_division=0)),
-        "weighted_f1": float(f1_score(y_true, y_pred, labels=labels, average="weighted", zero_division=0)),
+        "macro_precision": float(
+            precision_score(y_true, y_pred, labels=labels, average="macro", zero_division=0)
+        ),
+        "macro_recall": float(
+            recall_score(y_true, y_pred, labels=labels, average="macro", zero_division=0)
+        ),
+        "macro_f1": float(
+            f1_score(y_true, y_pred, labels=labels, average="macro", zero_division=0)
+        ),
+        "weighted_f1": float(
+            f1_score(y_true, y_pred, labels=labels, average="weighted", zero_division=0)
+        ),
         "per_class": {
             label: {
                 "precision": float(report[label]["precision"]),
@@ -91,6 +99,8 @@ def probability_metrics(
     """
     probabilities = np.asarray(probabilities, dtype=float)
     labels = list(labels)
+    if len(y_true) == 0 or bins < 1:
+        raise ValueError("y_true must be non-empty and bins must be positive")
     if probabilities.shape != (len(y_true), len(labels)):
         raise ValueError("probability matrix shape must match targets and labels")
     if np.any(probabilities < 0) or not np.allclose(probabilities.sum(axis=1), 1.0, atol=1e-5):
@@ -111,5 +121,7 @@ def probability_metrics(
             confidence <= edges[index + 1] if index == bins - 1 else confidence < edges[index + 1]
         )
         if in_bin.any():
-            ece += float(in_bin.mean()) * abs(float(correct[in_bin].mean()) - float(confidence[in_bin].mean()))
+            ece += float(in_bin.mean()) * abs(
+                float(correct[in_bin].mean()) - float(confidence[in_bin].mean())
+            )
     return {"multiclass_brier_score": brier, "top_label_ece_10_bins": float(ece)}

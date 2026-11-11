@@ -2,7 +2,7 @@
 
 ## Abstract
 
-This project investigates reproducible claim classification and explainability for English and low-resource African languages. AfrIFact is the intended primary benchmark because its published scope includes English, Yoruba, Hausa, and Igbo alongside evidence-oriented tasks. Its files require acceptance of Hugging Face access conditions, and access has not been granted in the current environment. The executable baseline is therefore a separately identified English-only TF-IDF + Logistic Regression experiment on FEVER. No African-language or transformer performance result is claimed. This report records the research design and current implementation status; measured findings will be added only from completed runs.
+This project investigates reproducible claim classification and explainability for English and low-resource African languages. AfrIFact is the intended primary benchmark because its published scope includes English, Yoruba, Hausa, and Igbo alongside evidence-oriented tasks. Its files require acceptance of Hugging Face access conditions, and access has not been granted in the current environment. The executable baseline is therefore a separately identified English-only TF-IDF + Logistic Regression experiment on FEVER. On the official labelled development partition (19,998 claims), the selected baseline achieved 0.5509 accuracy and 0.5516 macro F1. No African-language or transformer performance result is claimed.
 
 ## Introduction and related work
 
@@ -14,17 +14,21 @@ RQ1 compares a traditional TF-IDF baseline with a fine-tuned multilingual transf
 
 ## Data and methods
 
-AfrIFact is selected as the primary target, contingent on authorized access and schema inspection. X-Fact is documented as a secondary comparison source but is not selected for target-language experiments. FEVER serves as an independent English software and baseline benchmark. FEVER's official training set is split into training and validation groups using normalized-claim grouping; its labelled development set is the final held-out evaluation partition. The FEVER blind test is not used because it is unlabelled.
+AfrIFact is selected as the primary target, contingent on authorized access and schema inspection. X-Fact is documented as a secondary comparison source but is not selected for target-language experiments. FEVER serves as an independent English software and baseline benchmark. The official FEVER train file contains 145,449 rows; three normalized claim groups (three rows) also occur in the labelled development partition and were removed from training. A seeded, seven-fold StratifiedGroupKFold uses one fold (20,780 examples) for validation and the other folds (124,666 examples) for candidate fitting. The selected configuration was refit on all 145,446 cleaned training rows. The 19,998-row labelled development set is the final held-out evaluation partition. Its three labels are balanced at 6,666 rows each. The FEVER blind test is not used because it is unlabelled.
 
-The traditional baseline is a scikit-learn TF-IDF + Logistic Regression Pipeline. The planned transformer uses fine-tuned XLM-RoBERTa Base. Claim-only and evidence-based inputs are different tasks and will be reported separately. Linear model coefficients and token contributions explain fitted scores, not evidence or causal reasoning.
+The traditional baseline is a scikit-learn Pipeline with TF-IDF and Logistic Regression. It compares word unigrams/bigrams with character 3–5-grams; class weighting is balanced, `C=2.0`, `min_df=2`, and vocabulary size is capped at 150,000. Validation macro F1 selects the candidate. The planned transformer uses fine-tuned XLM-RoBERTa Base. Claim-only and evidence-based inputs are different tasks and will be reported separately. Linear model coefficients and token contributions explain fitted scores, not evidence or causal reasoning.
 
 ## Experimental setup and metrics
 
-All project-controlled splits use fixed seeds. Report accuracy, macro and weighted F1, per-class metrics, confusion matrix, sample count, and measured runtime. Per-language results require verified dataset language metadata. Hyperparameters are selected using validation data; the held-out partition is used once for final evaluation. Artifacts record model, dataset, split, environment, and configuration metadata.
+All project-controlled splits use fixed seeds. We report accuracy, macro and weighted F1, per-class metrics, confusion matrix, sample count, Brier score, top-label ECE, and measured runtime. Per-language results require verified dataset language metadata. Hyperparameters are selected using validation data; the held-out partition is used once for final evaluation. Artifacts record model, dataset hashes, split, environment, and configuration metadata.
 
 ## Results, error analysis, and explainability
 
-**Pending execution.** AfrIFact and XLM-R metrics are unavailable and are not fabricated. FEVER baseline results will be populated from the reproducible training command after data download and evaluation. Error categories will be assigned only where inspected examples support them. No cross-lingual or evidence-ablation conclusions are currently possible.
+The word unigram/bigram candidate reached validation macro F1 0.5814, compared with 0.5683 for character 3–5-grams. On labelled FEVER dev, the refit model reached accuracy 0.5509, macro F1 0.5516, and weighted F1 0.5516. Per-class F1 was 0.4859 for NOT ENOUGH INFORMATION, 0.6236 for REFUTED, and 0.5453 for SUPPORTED. The three classes each had 6,666 examples, so macro and weighted F1 coincide. The confusion matrix (rows true; columns predicted, ordered NOT ENOUGH INFORMATION / REFUTED / SUPPORTED) was `[[3167, 1145, 2354], [1373, 3974, 1319], [1830, 960, 3876]]`. Multiclass Brier score was 0.5686 and top-label ECE with ten bins was 0.1083; probabilities were not post-hoc calibrated.
+
+The final FEVER run took 12.60 seconds for fitting and 0.186 seconds for held-out predictions on Python 3.14.6, scikit-learn 1.9.1, NumPy 2.5.4, and arm64 macOS. Timings are from one local run. The confusion matrix shows most frequent errors from NOT ENOUGH INFORMATION into SUPPORTED (2,354) and from SUPPORTED into NOT ENOUGH INFORMATION (1,830). This is an observed confusion pattern, not an explanation of cause. Error categories have not been manually annotated.
+
+AfrIFact and XLM-R metrics are unavailable and are not fabricated. The downloaded FEVER JSONL has evidence annotations but no textual evidence passage; evidence ablation is not run. No cross-lingual conclusion is currently possible.
 
 ## Discussion, limitations, and ethics
 
@@ -32,7 +36,7 @@ The gated primary data creates an access prerequisite. Until fulfilled, this cod
 
 ## Conclusion
 
-The research pipeline separates dataset provenance, claim-only classification, evidence-based verification, and real-world fact checking. The current scientific result is a documented access and coverage gap; quantitative conclusions await actual runs on the authorized target benchmark.
+The pipeline separates dataset provenance, claim-only classification, evidence-based verification, and real-world fact checking. The measured English benchmark result is modest and class performance differs; this supports caution about treating a single aggregate as sufficient. Quantitative conclusions about the target African languages still await actual runs on the authorized primary benchmark.
 
 ## References
 

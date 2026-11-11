@@ -1,0 +1,270 @@
+{
+  "dataset": "FEVER",
+  "task": "English claim-only label classification",
+  "validation_candidates": [
+    {
+      "name": "word_unigrams_bigrams",
+      "configuration": {
+        "max_features": 150000,
+        "min_df": 2,
+        "class_weight": "balanced",
+        "max_iter": 1500,
+        "seed": 42,
+        "name": "word_unigrams_bigrams",
+        "analyzer": "word",
+        "ngram_range": [
+          1,
+          2
+        ],
+        "C": 2.0
+      },
+      "fit_seconds": 12.20172533299774,
+      "validation": {
+        "n_examples": 20780,
+        "labels": [
+          "NOT_ENOUGH_INFORMATION",
+          "REFUTED",
+          "SUPPORTED"
+        ],
+        "accuracy": 0.6051973051010587,
+        "macro_precision": 0.5748106151892651,
+        "macro_recall": 0.5946089507581683,
+        "macro_f1": 0.5814142730278063,
+        "weighted_f1": 0.6113599215432121,
+        "per_class": {
+          "NOT_ENOUGH_INFORMATION": {
+            "precision": 0.43746918652423994,
+            "recall": 0.5227808326787117,
+            "f1": 0.47633533148429813,
+            "support": 5092
+          },
+          "REFUTED": {
+            "precision": 0.5524736079486648,
+            "recall": 0.6274094969440527,
+            "f1": 0.5875619152449092,
+            "support": 4254
+          },
+          "SUPPORTED": {
+            "precision": 0.7344890510948905,
+            "recall": 0.6336365226517404,
+            "f1": 0.6803455723542117,
+            "support": 11434
+          }
+        },
+        "confusion_matrix": [
+          [
+            2662,
+            724,
+            1706
+          ],
+          [
+            672,
+            2669,
+            913
+          ],
+          [
+            2751,
+            1438,
+            7245
+          ]
+        ],
+        "probability_diagnostics": {
+          "multiclass_brier_score": 0.5039494750250452,
+          "top_label_ece_10_bins": 0.021347468494795303
+        }
+      }
+    },
+    {
+      "name": "character_3_to_5grams",
+      "configuration": {
+        "max_features": 150000,
+        "min_df": 2,
+        "class_weight": "balanced",
+        "max_iter": 1500,
+        "seed": 42,
+        "name": "character_3_to_5grams",
+        "analyzer": "char_wb",
+        "ngram_range": [
+          3,
+          5
+        ],
+        "C": 2.0
+      },
+      "fit_seconds": 32.35051949999979,
+      "validation": {
+        "n_examples": 20780,
+        "labels": [
+          "NOT_ENOUGH_INFORMATION",
+          "REFUTED",
+          "SUPPORTED"
+        ],
+        "accuracy": 0.5896053897978826,
+        "macro_precision": 0.5626321536338258,
+        "macro_recall": 0.5837589016506484,
+        "macro_f1": 0.5682764154560628,
+        "weighted_f1": 0.5973295636660961,
+        "per_class": {
+          "NOT_ENOUGH_INFORMATION": {
+            "precision": 0.4139280125195618,
+            "recall": 0.5194422623723488,
+            "f1": 0.46072112872321896,
+            "support": 5092
+          },
+          "REFUTED": {
+            "precision": 0.5406562054208274,
+            "recall": 0.6236483309826046,
+            "f1": 0.5791944110904923,
+            "support": 4254
+          },
+          "SUPPORTED": {
+            "precision": 0.7333122429610882,
+            "recall": 0.6081861115969914,
+            "f1": 0.6649137065544772,
+            "support": 11434
+          }
+        },
+        "confusion_matrix": [
+          [
+            2645,
+            764,
+            1683
+          ],
+          [
+            755,
+            2653,
+            846
+          ],
+          [
+            2990,
+            1490,
+            6954
+          ]
+        ],
+        "probability_diagnostics": {
+          "multiclass_brier_score": 0.5172424266294633,
+          "top_label_ece_10_bins": 0.011288931311840462
+        }
+      }
+    }
+  ],
+  "selected_candidate": "word_unigrams_bigrams",
+  "heldout": {
+    "n_examples": 19998,
+    "labels": [
+      "NOT_ENOUGH_INFORMATION",
+      "REFUTED",
+      "SUPPORTED"
+    ],
+    "accuracy": 0.5509050905090509,
+    "macro_precision": 0.5547818951842177,
+    "macro_recall": 0.5509050905090508,
+    "macro_f1": 0.5516139252659268,
+    "weighted_f1": 0.5516139252659269,
+    "per_class": {
+      "NOT_ENOUGH_INFORMATION": {
+        "precision": 0.4971742543171115,
+        "recall": 0.4750975097509751,
+        "f1": 0.485885240871433,
+        "support": 6666
+      },
+      "REFUTED": {
+        "precision": 0.6537259417667379,
+        "recall": 0.5961596159615962,
+        "f1": 0.6236171047469596,
+        "support": 6666
+      },
+      "SUPPORTED": {
+        "precision": 0.5134454894688039,
+        "recall": 0.5814581458145814,
+        "f1": 0.545339430179388,
+        "support": 6666
+      }
+    },
+    "confusion_matrix": [
+      [
+        3167,
+        1145,
+        2354
+      ],
+      [
+        1373,
+        3974,
+        1319
+      ],
+      [
+        1830,
+        960,
+        3876
+      ]
+    ],
+    "probability_diagnostics": {
+      "multiclass_brier_score": 0.5685624801014664,
+      "top_label_ece_10_bins": 0.1083278155381089
+    }
+  },
+  "languages": {
+    "en": {
+      "n_examples": 19998,
+      "labels": [
+        "NOT_ENOUGH_INFORMATION",
+        "REFUTED",
+        "SUPPORTED"
+      ],
+      "accuracy": 0.5509050905090509,
+      "macro_precision": 0.5547818951842177,
+      "macro_recall": 0.5509050905090508,
+      "macro_f1": 0.5516139252659268,
+      "weighted_f1": 0.5516139252659269,
+      "per_class": {
+        "NOT_ENOUGH_INFORMATION": {
+          "precision": 0.4971742543171115,
+          "recall": 0.4750975097509751,
+          "f1": 0.485885240871433,
+          "support": 6666
+        },
+        "REFUTED": {
+          "precision": 0.6537259417667379,
+          "recall": 0.5961596159615962,
+          "f1": 0.6236171047469596,
+          "support": 6666
+        },
+        "SUPPORTED": {
+          "precision": 0.5134454894688039,
+          "recall": 0.5814581458145814,
+          "f1": 0.545339430179388,
+          "support": 6666
+        }
+      },
+      "confusion_matrix": [
+        [
+          3167,
+          1145,
+          2354
+        ],
+        [
+          1373,
+          3974,
+          1319
+        ],
+        [
+          1830,
+          960,
+          3876
+        ]
+      ],
+      "probability_diagnostics": {
+        "multiclass_brier_score": 0.5685624801014664,
+        "top_label_ece_10_bins": 0.1083278155381089
+      }
+    }
+  },
+  "runtime": {
+    "python": "3.14.6",
+    "platform": "macOS-26.4.1-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "final_fit_seconds": 12.599573291001434,
+    "heldout_prediction_seconds": 0.18621400000120047,
+    "heldout_milliseconds_per_example": 0.009311631163176341
+  },
+  "status": "measured"
+}

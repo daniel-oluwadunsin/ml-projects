@@ -1,0 +1,33 @@
+{
+  "seed": 42,
+  "dataset": "fever",
+  "train_file": "data/raw/fever_train.jsonl",
+  "dev_file": "data/raw/fever_dev.jsonl",
+  "validation_fraction": 0.15,
+  "max_features": 150000,
+  "min_df": 2,
+  "class_weight": "balanced",
+  "max_iter": 1500,
+  "model_dir": "artifacts/models/fever-tfidf-logreg",
+  "results_dir": "results/fever",
+  "selection_candidates": [
+    {
+      "name": "word_unigrams_bigrams",
+      "analyzer": "word",
+      "ngram_range": [
+        1,
+        2
+      ],
+      "C": 2.0
+    },
+    {
+      "name": "character_3_to_5grams",
+      "analyzer": "char_wb",
+      "ngram_range": [
+        3,
+        5
+      ],
+      "C": 2.0
+    }
+  ]
+}

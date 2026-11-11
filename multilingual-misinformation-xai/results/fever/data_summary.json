@@ -1,0 +1,59 @@
+{
+  "source": "FEVER official JSONL files",
+  "train": {
+    "dataset": "fever",
+    "n_examples": 145446,
+    "label_counts": {
+      "NOT_ENOUGH_INFORMATION": 35639,
+      "REFUTED": 29775,
+      "SUPPORTED": 80032
+    },
+    "language_counts": {
+      "en": 145446
+    },
+    "source_split_counts": {
+      "train": 145446
+    },
+    "dataset_fingerprints": [],
+    "evidence_annotation_present": 145446,
+    "evidence_text_available": 0,
+    "duplicate_claim_groups": 5915,
+    "duplicate_claim_rows_beyond_first": 9932,
+    "claim_character_length": {
+      "min": 10,
+      "median": 44.0,
+      "max": 614
+    }
+  },
+  "official_labelled_dev": {
+    "dataset": "fever",
+    "n_examples": 19998,
+    "label_counts": {
+      "NOT_ENOUGH_INFORMATION": 6666,
+      "REFUTED": 6666,
+      "SUPPORTED": 6666
+    },
+    "language_counts": {
+      "en": 19998
+    },
+    "source_split_counts": {
+      "official_labelled_dev": 19998
+    },
+    "dataset_fingerprints": [],
+    "evidence_annotation_present": 19998,
+    "evidence_text_available": 0,
+    "duplicate_claim_groups": 337,
+    "duplicate_claim_rows_beyond_first": 403,
+    "claim_character_length": {
+      "min": 13,
+      "median": 46.0,
+      "max": 219
+    }
+  },
+  "partition_group_overlap_removed_from_training": 3,
+  "partition_rows_removed_from_training": 3,
+  "source_train_rows_before_overlap_filter": 145449,
+  "source_development_rows": 19998,
+  "protocol": "Source development split reserved as held-out evaluation; never used for selection.",
+  "note": "Statistics computed from local files by this run; raw records are not copied here."
+}

@@ -40,10 +40,26 @@ st.markdown(
 st.markdown("### Dataset and model status")
 st.dataframe(
     [
-        {"Component": "AfrIFact", "Status": "Awaiting accepted Hugging Face access", "Use": "Primary target benchmark"},
-        {"Component": "X-Fact", "Status": "Reviewed; target languages absent from published inventory", "Use": "Secondary context only"},
-        {"Component": "FEVER", "Status": "Runnable when local files and model exist", "Use": "Separate English baseline"},
-        {"Component": "XLM-RoBERTa", "Status": "Training pipeline available; no fine-tuned artifact by default", "Use": "Future comparable experiment"},
+        {
+            "Component": "AfrIFact",
+            "Status": "Awaiting accepted Hugging Face access",
+            "Use": "Primary target benchmark",
+        },
+        {
+            "Component": "X-Fact",
+            "Status": "Reviewed; target languages absent from published inventory",
+            "Use": "Secondary context only",
+        },
+        {
+            "Component": "FEVER",
+            "Status": "Runnable when local files and model exist",
+            "Use": "Separate English baseline",
+        },
+        {
+            "Component": "XLM-RoBERTa",
+            "Status": "Training pipeline available; no fine-tuned artifact by default",
+            "Use": "Future comparable experiment",
+        },
     ],
     hide_index=True,
     use_container_width=True,

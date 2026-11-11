@@ -55,6 +55,6 @@ def build_baseline(
 
 def predict_with_probabilities(model: Pipeline, texts: Sequence[str]):
     """Return labels and class probabilities from the fitted pipeline."""
-    if not texts or any(not isinstance(text, str) or not text.strip() for text in texts):
+    if len(texts) == 0 or any(not isinstance(text, str) or not text.strip() for text in texts):
         raise ValueError("Provide one or more non-empty claim strings")
     return model.predict(texts), model.predict_proba(texts)

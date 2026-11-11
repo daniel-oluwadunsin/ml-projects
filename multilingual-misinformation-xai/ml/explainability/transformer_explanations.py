@@ -24,7 +24,9 @@ def integrated_gradients_tokens(
         import torch
         from captum.attr import IntegratedGradients
     except ImportError as exc:
-        raise RuntimeError("Install optional explanation dependencies with `uv sync --extra explainability`") from exc
+        raise RuntimeError(
+            "Install optional explanation dependencies with `uv sync --extra explainability`"
+        ) from exc
     if not text.strip():
         raise ValueError("text must not be empty")
     if n_steps < 2:
@@ -56,5 +58,5 @@ def integrated_gradients_tokens(
     tokens = tokenizer.convert_ids_to_tokens(input_ids[0])
     return [
         {"token": str(token), "attribution": float(value)}
-        for token, value in zip(tokens, attribution.detach().cpu().tolist())
+        for token, value in zip(tokens, attribution.detach().cpu().tolist(), strict=True)
     ]

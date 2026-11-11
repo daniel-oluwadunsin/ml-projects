@@ -17,17 +17,15 @@ dependencies = [
   "streamlit>=1.45,<2",
   "plotly>=6,<7",
   "matplotlib>=3.9,<4",
-  "pyyaml>=6,<7",
   "certifi>=2025.1",
 ]
 
 [project.optional-dependencies]
 afrifact = ["datasets>=3.3,<5", "huggingface-hub>=0.29,<2"]
 transformer = [
-  "torch>=2.6",
+  "torch>=2.6,<3",
   "transformers>=4.49,<6",
   "accelerate>=1.4,<2",
-  "evaluate>=0.4,<1",
   "datasets>=3.3,<5",
 ]
 explainability = ["captum>=0.7,<1"]

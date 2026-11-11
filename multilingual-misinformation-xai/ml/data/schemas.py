@@ -17,9 +17,9 @@ class ClaimRecord:
     label: str
     source_split: str
     group_id: str
+    dataset_fingerprint: str | None = None
     language: str | None = None
     evidence: Any | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
-

@@ -6,8 +6,8 @@ import pytest
 from ml.evaluation.metrics import (
     classification_metrics,
     per_language_metrics,
-    probability_metrics,
     probabilities_to_entropy,
+    probability_metrics,
 )
 
 

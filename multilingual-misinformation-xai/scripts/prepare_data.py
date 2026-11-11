@@ -8,7 +8,6 @@ from pathlib import Path
 
 from ml.data.loaders import load_fever_jsonl
 from ml.data.statistics import summarize_records
-from ml.data.validation import assert_group_disjoint
 
 
 def main() -> None:
@@ -20,7 +19,9 @@ def main() -> None:
     args = parser.parse_args()
     train = load_fever_jsonl(args.train, "train")
     dev = load_fever_jsonl(args.dev, "official_labelled_dev")
+    source_train_rows = len(train)
     overlap = {row.group_id for row in train} & {row.group_id for row in dev}
+    overlap_rows = sum(row.group_id in overlap for row in train)
     if overlap:
         train = [row for row in train if row.group_id not in overlap]
     summary = {
@@ -28,7 +29,15 @@ def main() -> None:
         "train": summarize_records(train),
         "official_labelled_dev": summarize_records(dev),
         "partition_group_overlap_removed_from_training": len(overlap),
-        "note": "Statistics computed from local files by this run; raw records are not copied here.",
+        "partition_rows_removed_from_training": overlap_rows,
+        "source_train_rows_before_overlap_filter": source_train_rows,
+        "source_development_rows": len(dev),
+        "protocol": (
+            "Source development split reserved as held-out evaluation; never used for selection."
+        ),
+        "note": (
+            "Statistics computed from local files by this run; raw records are not copied here."
+        ),
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")

@@ -2,6 +2,5 @@
   "id": "<replace with the inspected stable id field>",
   "claim": "<replace with the inspected claim text field>",
   "label": "<replace with the inspected source label field>",
-  "language": "<replace with the inspected language code field>",
-  "evidence": "<optional: replace only with the verified evidence text field>"
+  "language": "<replace with the inspected language code field>"
 }

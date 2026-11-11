@@ -18,11 +18,21 @@ X-Fact's published split/language inventory is not aligned with the four target 
 
 FEVER claims were produced by altering Wikipedia sentences. The resulting English claim-only classifier measures association with FEVER's annotation process and claim distribution. It does not verify real-world truth, retrieve evidence, or establish multilingual reliability. Its official test is blind/unlabelled; this implementation uses the official labelled development set as the reported held-out evaluation set and does not call it FEVER's blind test.
 
+### FEVER counts observed in this local run
+
+| Partition | Rows inspected | NOT ENOUGH INFORMATION | REFUTED | SUPPORTED | Additional detail |
+|---|---:|---:|---:|---:|---|
+| Official train file before overlap filter | 145,449 | — | — | — | Three exact normalized claim groups (three rows) also appear in labelled dev |
+| Train rows used after overlap filter | 145,446 | 35,639 | 29,775 | 80,032 | English only; 5,915 repeated exact claim groups |
+| Official labelled dev | 19,998 | 6,666 | 6,666 | 6,666 | English only; final held-out evaluation |
+
+The downloaded JSONL files contain evidence annotation records for all loaded examples, but **zero textual evidence passages**. Evidence identifiers are not treated as passage text. Counts are saved in `results/fever/data_summary.json`; source file SHA-256 hashes are recorded in run metadata.
+
 ## Access and selection
 
 1. Visit the [AfrIFact dataset page](https://huggingface.co/datasets/masakhane/AfrIFact), sign in, review and accept the conditions.
 2. Install the optional dataset dependency and authenticate locally with `hf auth login` (or a secure `HF_TOKEN` secret). Never commit credentials.
-3. Run `python scripts/inspect_afrifact.py` to print the available configurations and feature names. The adapter refuses to guess claim, label, language, or evidence columns.
+3. Run `python scripts/inspect_afrifact.py` to print the available configurations and feature names. The adapter refuses to guess claim, label, language, or evidence columns and decodes Hugging Face `ClassLabel` values to their declared names before mapping.
 4. Copy the verified configuration and feature names into a local, untracked config. Download only under the accepted terms. Report actual rows/splits only after inspection.
 
 Until those steps are complete, all African-language evaluation and AfrIFact training are **pending**. FEVER is used only to exercise the runnable English baseline, training/evaluation code, explanations, and dashboard.

@@ -13,9 +13,13 @@ data/raw/*
 data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
-artifacts/models/*
+artifacts/models/**/*.joblib
+artifacts/models/**/*.pkl
+artifacts/models/**/*.pickle
+artifacts/models/**/*.pt
+artifacts/models/**/*.pth
+artifacts/models/**/*.safetensors
 artifacts/checkpoints/*
-!artifacts/models/.gitkeep
 !artifacts/checkpoints/.gitkeep
 results/**/predictions.jsonl
 results/**/examples.jsonl

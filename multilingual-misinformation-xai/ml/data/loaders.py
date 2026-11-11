@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import json
 from collections.abc import Iterator, Mapping
+from numbers import Integral
 from pathlib import Path
 from typing import Any
 
 from ml.data.preprocessing import duplicate_group_id, normalize_text
 from ml.data.schemas import ClaimRecord
 from ml.data.validation import validate_records
-
 
 FEVER_TO_CANONICAL = {
     "SUPPORTS": "SUPPORTED",
@@ -63,6 +63,13 @@ def _required_string(value: Any, *, dataset: str, field: str) -> str:
     if not normalized:
         raise ValueError(f"Empty required {dataset} field {field!r}")
     return normalized
+
+
+def _decode_dataset_value(feature: Any, value: Any) -> Any:
+    """Decode an explicitly declared Hugging Face ClassLabel to its source name."""
+    if value is not None and hasattr(feature, "int2str") and isinstance(value, Integral):
+        return feature.int2str(int(value))
+    return value
 
 
 def load_fever_jsonl(
@@ -132,16 +139,23 @@ def load_authorized_hf_split(
             f"Mapped source fields are absent: {sorted(absent)}. Actual fields: {sorted(available)}"
         )
     records: list[ClaimRecord] = []
+    fingerprint = getattr(dataset, "_fingerprint", None)
+    features = dataset.features
     for row in dataset:
         sample_id = _required_string(row[columns["id"]], dataset="AfrIFact", field=columns["id"])
         claim = _required_string(row[columns["claim"]], dataset="AfrIFact", field=columns["claim"])
-        original, canonical = _canonical_label(
-            row[columns["label"]], AFRIFACT_TO_CANONICAL, "AfrIFact"
-        )
+        source_label = _decode_dataset_value(features[columns["label"]], row[columns["label"]])
+        original, canonical = _canonical_label(source_label, AFRIFACT_TO_CANONICAL, "AfrIFact")
         evidence_column = columns.get("evidence")
         group_column = columns.get("group_id")
-        source_group = row.get(group_column) if group_column else None
-        language_value = row.get(columns["language"])
+        source_group = (
+            _decode_dataset_value(features[group_column], row[group_column])
+            if group_column
+            else None
+        )
+        language_value = _decode_dataset_value(
+            features[columns["language"]], row[columns["language"]]
+        )
         records.append(
             ClaimRecord(
                 sample_id=sample_id,
@@ -155,6 +169,7 @@ def load_authorized_hf_split(
                     if source_group is not None
                     else duplicate_group_id(claim)
                 ),
+                dataset_fingerprint=str(fingerprint) if fingerprint else None,
                 language=(normalize_text(str(language_value)).lower() or None)
                 if language_value is not None
                 else None,

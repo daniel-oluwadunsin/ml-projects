@@ -23,4 +23,7 @@ st.markdown(
 st.markdown("### Ethical considerations")
 st.markdown(read_docs("docs/limitations.md"))
 st.markdown("### Code license")
-st.write("Project code is MIT licensed. Dataset licenses, access conditions, and pretrained model terms remain separate.")
+st.write(
+    "Project code is MIT licensed. Dataset licenses, access conditions, and pretrained model "
+    "terms remain separate."
+)

@@ -3,30 +3,40 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import platform
 import time
+import tomllib
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import numpy as np
-import yaml
+
 from ml.data.loaders import load_authorized_hf_split
 from ml.data.splits import grouped_train_validation_indices
-from ml.evaluation.metrics import classification_metrics, probability_metrics
+from ml.evaluation.metrics import (
+    classification_metrics,
+    per_language_metrics,
+    probability_metrics,
+)
 from ml.models.transformer import available_device
 
 
 def _evidence_text(evidence: Any) -> str:
     if isinstance(evidence, str):
-        return evidence.strip()
-    if isinstance(evidence, (list, tuple)) and all(isinstance(item, str) for item in evidence):
-        return " ".join(item.strip() for item in evidence if item.strip())
-    raise ValueError(
-        "Evidence mode requires a verified passage field containing text (or a list of text "
-        "passages). Inspect and adapt structured source evidence explicitly before training."
-    )
+        text = evidence.strip()
+    elif isinstance(evidence, (list, tuple)) and all(isinstance(item, str) for item in evidence):
+        text = " ".join(item.strip() for item in evidence if item.strip())
+    else:
+        raise ValueError(
+            "Evidence mode requires a verified passage field containing text (or a list of text "
+            "passages). Inspect and adapt structured source evidence explicitly before training."
+        )
+    if not text:
+        raise ValueError("Evidence passage is empty; refusing evidence-conditioned training")
+    return text
 
 
 def _dataset(records, *, text_mode: str, tokenizer, max_length: int, label_to_id: dict[str, int]):
@@ -54,8 +64,10 @@ def _dataset(records, *, text_mode: str, tokenizer, max_length: int, label_to_id
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", type=Path, default=Path("configs/transformer.yaml"))
-    parser.add_argument("--columns", type=Path, required=True, help="JSON mapping verified source fields")
+    parser.add_argument("--config", type=Path, default=Path("configs/transformer.toml"))
+    parser.add_argument(
+        "--columns", type=Path, required=True, help="JSON mapping verified source fields"
+    )
     parser.add_argument("--output-dir", type=Path, default=None)
     parser.add_argument("--max-train-rows", type=int, default=None, help="Exploratory subset only")
     args = parser.parse_args()
@@ -69,13 +81,17 @@ def main() -> None:
             TrainingArguments,
         )
     except ImportError as exc:
-        raise SystemExit("Install optional dependencies with `uv sync --extra transformer`") from exc
-    config = yaml.safe_load(args.config.read_text(encoding="utf-8"))
+        raise SystemExit(
+            "Install optional dependencies with `uv sync --extra transformer`"
+        ) from exc
+    config = tomllib.loads(args.config.read_text(encoding="utf-8"))
     if not config.get("dataset_configuration"):
         raise SystemExit("Set dataset_configuration after authorized dataset inspection")
     for key in ("train_split", "test_split"):
         if not config.get(key):
-            raise SystemExit(f"Set {key} to a source-verified split name; the script will not guess")
+            raise SystemExit(
+                f"Set {key} to a source-verified split name; the script will not guess"
+            )
     columns = json.loads(args.columns.read_text(encoding="utf-8"))
     if config.get("text_mode") == "claim_plus_evidence" and not columns.get("evidence"):
         raise SystemExit("Evidence mode requires a source-verified evidence field mapping")
@@ -123,16 +139,25 @@ def main() -> None:
         config["model_name"], num_labels=len(all_labels), label2id=label_to_id, id2label=id_to_label
     )
     train_data, _ = _dataset(
-        fit_records, text_mode=config["text_mode"], tokenizer=tokenizer,
-        max_length=int(config["max_length"]), label_to_id=label_to_id
+        fit_records,
+        text_mode=config["text_mode"],
+        tokenizer=tokenizer,
+        max_length=int(config["max_length"]),
+        label_to_id=label_to_id,
     )
     validation_data, _ = _dataset(
-        validation_records, text_mode=config["text_mode"], tokenizer=tokenizer,
-        max_length=int(config["max_length"]), label_to_id=label_to_id
+        validation_records,
+        text_mode=config["text_mode"],
+        tokenizer=tokenizer,
+        max_length=int(config["max_length"]),
+        label_to_id=label_to_id,
     )
     test_data, _ = _dataset(
-        test_records, text_mode=config["text_mode"], tokenizer=tokenizer,
-        max_length=int(config["max_length"]), label_to_id=label_to_id
+        test_records,
+        text_mode=config["text_mode"],
+        tokenizer=tokenizer,
+        max_length=int(config["max_length"]),
+        label_to_id=label_to_id,
     )
     if device == "cuda":
         fp16 = True
@@ -147,7 +172,11 @@ def main() -> None:
             [id_to_label[int(value)] for value in predicted],
             all_labels,
         )
-        return {"accuracy": report["accuracy"], "macro_f1": report["macro_f1"], "weighted_f1": report["weighted_f1"]}
+        return {
+            "accuracy": report["accuracy"],
+            "macro_f1": report["macro_f1"],
+            "weighted_f1": report["weighted_f1"],
+        }
 
     output_dir = args.output_dir or Path(config["output_dir"])
     training_args = TrainingArguments(
@@ -182,7 +211,9 @@ def main() -> None:
         eval_dataset=validation_data,
         processing_class=tokenizer,
         compute_metrics=compute_metrics,
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=int(config["early_stopping_patience"]))],
+        callbacks=[
+            EarlyStoppingCallback(early_stopping_patience=int(config["early_stopping_patience"]))
+        ],
     )
     started = time.perf_counter()
     training_result = trainer.train()
@@ -196,6 +227,12 @@ def main() -> None:
     test_probabilities = torch.softmax(torch.tensor(test_prediction.predictions), dim=-1).numpy()
     test_metrics["probability_diagnostics"] = probability_metrics(
         test_labels, test_probabilities, all_labels
+    )
+    test_metrics["languages"] = per_language_metrics(
+        test_labels,
+        [id_to_label[int(value)] for value in test_ids],
+        [record.language for record in test_records],
+        all_labels,
     )
     trainer.save_model(str(output_dir / "final"))
     tokenizer.save_pretrained(output_dir / "final")
@@ -212,31 +249,72 @@ def main() -> None:
         "overlap_groups_removed_from_training": len(overlap),
         "validation": trainer.evaluate(validation_data),
         "heldout": test_metrics,
+        "languages": test_metrics["languages"],
         "training_seconds": training_seconds,
+        "heldout_sample_ids_sha256": hashlib.sha256(
+            "\n".join(sorted(record.sample_id for record in test_records)).encode("utf-8")
+        ).hexdigest(),
         "device": device,
         "created_at_utc": datetime.now(UTC).isoformat(),
         "python": platform.python_version(),
+        "platform": platform.platform(),
+        "machine": platform.machine(),
+        "versions": {
+            "torch": torch.__version__,
+            "numpy": np.__version__,
+            "transformers": __import__("transformers").__version__,
+            "datasets": __import__("datasets").__version__,
+        },
+        "dataset_fingerprints": {
+            "train": sorted(
+                {row.dataset_fingerprint for row in train_records if row.dataset_fingerprint}
+            ),
+            "test": sorted(
+                {row.dataset_fingerprint for row in test_records if row.dataset_fingerprint}
+            ),
+        },
+        "test_inference_metrics": test_prediction.metrics,
         "exploratory_subset": args.max_train_rows,
         "status": "measured",
     }
     (result_dir / "metrics.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     with (result_dir / "predictions.jsonl").open("w", encoding="utf-8") as stream:
-        for record, pred_id, logits in zip(test_records, test_ids, test_prediction.predictions):
+        for record, pred_id, logits in zip(
+            test_records, test_ids, test_prediction.predictions, strict=True
+        ):
             probs = torch.softmax(torch.tensor(logits), dim=-1).tolist()
-            stream.write(json.dumps({
-                "sample_id": record.sample_id,
-                "language": record.language,
-                "true_label": record.label,
-                "predicted_label": id_to_label[int(pred_id)],
-                "probabilities": {label: float(probs[index]) for label, index in label_to_id.items()},
-            }, ensure_ascii=False) + "\n")
-    (result_dir / "metadata.json").write_text(json.dumps({
-        "config": config,
-        "columns": columns,
-        "label_to_id": label_to_id,
-        "train_result": training_result.metrics,
-        "status": "fine_tuned",
-    }, indent=2) + "\n", encoding="utf-8")
+            stream.write(
+                json.dumps(
+                    {
+                        "sample_id": record.sample_id,
+                        "language": record.language,
+                        "true_label": record.label,
+                        "predicted_label": id_to_label[int(pred_id)],
+                        "probabilities": {
+                            label: float(probs[index]) for label, index in label_to_id.items()
+                        },
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n"
+            )
+    (result_dir / "metadata.json").write_text(
+        json.dumps(
+            {
+                "config": config,
+                "columns": columns,
+                "train_split": config["train_split"],
+                "test_split": config["test_split"],
+                "heldout_sample_ids_sha256": result["heldout_sample_ids_sha256"],
+                "label_to_id": label_to_id,
+                "train_result": training_result.metrics,
+                "status": "fine_tuned",
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     print(json.dumps(result, indent=2))
 
 

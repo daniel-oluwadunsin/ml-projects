@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from ml.data.loaders import load_fever_jsonl
+from ml.data.loaders import _decode_dataset_value, load_fever_jsonl
 from ml.data.preprocessing import duplicate_group_id, normalize_text
 from ml.data.splits import grouped_train_validation_indices
 from ml.data.validation import assert_group_disjoint
@@ -20,7 +20,8 @@ def test_unicode_normalization_preserves_yoruba_tone_marks():
 def test_fever_loader_preserves_source_label_and_maps_task_label(tmp_path):
     path = tmp_path / "fever.jsonl"
     path.write_text(
-        json.dumps({"id": 17, "label": "NOT ENOUGH INFO", "claim": "A claim", "evidence": []}) + "\n",
+        json.dumps({"id": 17, "label": "NOT ENOUGH INFO", "claim": "A claim", "evidence": []})
+        + "\n",
         encoding="utf-8",
     )
     [record] = load_fever_jsonl(path, "dev")
@@ -36,6 +37,15 @@ def test_loader_rejects_unknown_source_label(tmp_path):
     path.write_text(json.dumps({"id": 1, "label": "TRUE", "claim": "A claim"}), encoding="utf-8")
     with pytest.raises(ValueError, match="Unrecognized FEVER label"):
         load_fever_jsonl(path, "train")
+
+
+def test_hugging_face_class_label_is_decoded_to_declared_name():
+    class Feature:
+        def int2str(self, value):
+            return ["SUPPORT", "REFUTES", "NEI"][value]
+
+    assert _decode_dataset_value(Feature(), 2) == "NEI"
+    assert _decode_dataset_value(object(), "SUPPORT") == "SUPPORT"
 
 
 def test_split_guard_rejects_cross_partition_duplicate():

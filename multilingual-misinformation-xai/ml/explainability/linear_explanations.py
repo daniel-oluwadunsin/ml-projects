@@ -60,7 +60,10 @@ def local_feature_contributions(
     contributions = matrix.data * coefficients[feature_indices]
     terms = vectorizer.get_feature_names_out()[feature_indices]
     ordered = sorted(
-        ({"feature": str(term), "contribution": float(value)} for term, value in zip(terms, contributions)),
+        (
+            {"feature": str(term), "contribution": float(value)}
+            for term, value in zip(terms, contributions, strict=True)
+        ),
         key=lambda item: abs(item["contribution"]),
         reverse=True,
     )[:top_n]
@@ -71,5 +74,7 @@ def local_feature_contributions(
         "feature_contributions": ordered,
         "sum_of_all_feature_contributions": float(contributions.sum()),
         "linear_score": float(contributions.sum() + intercept),
-        "warning": "This explains a fitted class score, not factual correctness or causal reasoning.",
+        "warning": (
+            "This explains a fitted class score, not factual correctness or causal reasoning."
+        ),
     }
