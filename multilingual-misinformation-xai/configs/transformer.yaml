@@ -15,6 +15,8 @@ early_stopping_patience: 3
 output_dir: artifacts/checkpoints/afrifact-xlmr
 dataset_repository: masakhane/AfrIFact
 dataset_configuration: null # Discover configurations from the authorized dataset card first.
+train_split: null # Confirm the source's actual split names after access is granted.
+test_split: null
 label_column: null # Set explicitly after inspecting the authorized configuration's features.
 claim_column: null
 language_column: null

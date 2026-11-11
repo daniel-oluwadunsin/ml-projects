@@ -65,7 +65,7 @@ The exact `--help` options are authoritative as the scripts are completed. The f
 ## AfrIFact access
 
 1. Sign in on the [AfrIFact dataset page](https://huggingface.co/datasets/masakhane/AfrIFact) and accept its terms.
-2. Run `hf auth login` locally. Do not paste tokens into source files or commit them.
+2. Install the dataset adapter with `uv sync --extra afrifact`, then run `hf auth login` locally. Do not paste tokens into source files or commit them.
 3. Inspect the real configs/features with `python scripts/inspect_afrifact.py`.
 4. Set the actual field mapping in an untracked local config only after inspection.
 

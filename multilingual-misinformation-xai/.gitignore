@@ -6,6 +6,7 @@ __pycache__/
 htmlcov/
 .streamlit/secrets.toml
 .env
+configs/datasets/afrifact.local.json
 
 # Dataset files and derived splits stay local; results and figures are versioned.
 data/raw/*
@@ -16,6 +17,8 @@ artifacts/models/*
 artifacts/checkpoints/*
 !artifacts/models/.gitkeep
 !artifacts/checkpoints/.gitkeep
+results/**/predictions.jsonl
+results/**/examples.jsonl
 *.joblib
 *.safetensors
 *.pt

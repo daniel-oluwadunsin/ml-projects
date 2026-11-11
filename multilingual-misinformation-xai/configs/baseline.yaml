@@ -10,5 +10,15 @@ C: 2.0
 class_weight: balanced
 max_iter: 1500
 test_size: 0.20
+validation_fraction: 0.15
+selection_candidates:
+  - name: word_unigrams_bigrams
+    analyzer: word
+    ngram_range: [1, 2]
+    C: 2.0
+  - name: character_3_to_5grams
+    analyzer: char_wb
+    ngram_range: [3, 5]
+    C: 2.0
 model_dir: artifacts/models/fever-tfidf-logreg
 results_dir: results/fever
