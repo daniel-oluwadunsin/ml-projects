@@ -1,0 +1,21 @@
+dataset: afrifact
+model_name: FacebookAI/xlm-roberta-base
+text_mode: claim
+seed: 42
+learning_rate: 2.0e-5
+batch_size: 8
+gradient_accumulation_steps: 2
+epochs: 3
+max_length: 256
+weight_decay: 0.01
+validation_fraction: 0.15
+eval_steps: 250
+save_steps: 250
+early_stopping_patience: 3
+output_dir: artifacts/checkpoints/afrifact-xlmr
+dataset_repository: masakhane/AfrIFact
+dataset_configuration: null # Discover configurations from the authorized dataset card first.
+label_column: null # Set explicitly after inspecting the authorized configuration's features.
+claim_column: null
+language_column: null
+evidence_column: null

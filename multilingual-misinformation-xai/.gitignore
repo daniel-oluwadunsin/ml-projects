@@ -1,0 +1,27 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.streamlit/secrets.toml
+.env
+
+# Dataset files and derived splits stay local; results and figures are versioned.
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+artifacts/models/*
+artifacts/checkpoints/*
+!artifacts/models/.gitkeep
+!artifacts/checkpoints/.gitkeep
+*.joblib
+*.safetensors
+*.pt
+*.pth
+
+# Local Hugging Face cache
+.cache/
+hf_cache/
+
